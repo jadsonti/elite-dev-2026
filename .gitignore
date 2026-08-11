@@ -1,0 +1,28 @@
+# macOS
+.DS_Store
+
+# IDE
+.idea/
+.vscode/
+.metadata/
+.settings/
+.project
+.classpath
+.springBeans
+.sts4-cache/
+
+# Backend
+backend/target/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+

@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: elite-dev-postgres
+    environment:
+      POSTGRES_DB: elite_dev
+      POSTGRES_USER: elite
+      POSTGRES_PASSWORD: elite
+    ports:
+      - "5432:5432"
+    volumes:
+      - elite_dev_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  elite_dev_postgres_data:
