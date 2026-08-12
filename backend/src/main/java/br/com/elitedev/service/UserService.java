@@ -31,10 +31,12 @@ public class UserService {
             String rawPassword,
             Role role) {
 
-        String normalizedEmail = email.trim().toLowerCase(Locale.ROOT);
+        String normalizedEmail = normalizeEmail(email);
 
         if (userRepository.existsByEmail(normalizedEmail)) {
-            throw new IllegalArgumentException("Já existe um usuário com este e-mail.");
+            throw new IllegalArgumentException(
+                    "Já existe um usuário com este e-mail."
+            );
         }
 
         String encodedPassword = passwordEncoder.encode(rawPassword);
@@ -43,8 +45,18 @@ public class UserService {
                 name.trim(),
                 normalizedEmail,
                 encodedPassword,
-                role);
+                role
+        );
 
         return userRepository.save(user);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(normalizeEmail(email));
+    }
+
+    private String normalizeEmail(String email) {
+        return email.trim().toLowerCase(Locale.ROOT);
     }
 }
