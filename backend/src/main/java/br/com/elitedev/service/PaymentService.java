@@ -27,14 +27,17 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
+    private final TicketService ticketService;
 
     public PaymentService(
             PaymentRepository paymentRepository,
             ReservationRepository reservationRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            TicketService ticketService) {
         this.paymentRepository = paymentRepository;
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
+        this.ticketService = ticketService;
     }
 
     @Transactional
@@ -53,12 +56,15 @@ public class PaymentService {
             failureReason = DECLINED_REASON;
         }
 
-        Payment payment = new Payment(
+        Payment payment = paymentRepository.save(new Payment(
                 reservation,
                 customer,
                 request.outcome(),
-                failureReason);
-        return PaymentResponse.from(paymentRepository.save(payment));
+                failureReason));
+        if (request.outcome() == PaymentStatus.APPROVED) {
+            ticketService.issueForReservation(reservation);
+        }
+        return PaymentResponse.from(payment);
     }
 
     @Transactional(readOnly = true)
