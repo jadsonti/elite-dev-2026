@@ -192,6 +192,14 @@ public class EventService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public boolean existsByExternalReference(
+            String externalSource,
+            String externalId) {
+        return eventRepository.existsByExternalSourceAndExternalId(
+                externalSource, externalId);
+    }
+
     private User findUserByEmail(String email) {
 
         String normalizedEmail =

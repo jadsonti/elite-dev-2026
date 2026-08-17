@@ -142,6 +142,10 @@ public class SecurityConfig {
                     "/api/events/*"
                 ).permitAll()
 
+                .requestMatchers(
+                    "/api/catalog/**"
+                ).hasAuthority("ROLE_ADMIN")
+
                 // Administração dos eventos
                 .requestMatchers(
                     "/api/events/organizer/**"

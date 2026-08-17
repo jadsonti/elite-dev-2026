@@ -9,6 +9,11 @@ import br.com.elitedev.domain.event.EventStatus;
 
 public interface EventRepository extends JpaRepository<Event, Long> {
 
+    boolean existsByExternalSourceAndExternalId(
+            String externalSource,
+            String externalId
+    );
+
     List<Event> findByStatusOrderByEventDateTimeAsc(
             EventStatus status
     );
