@@ -150,6 +150,10 @@ public class SecurityConfig {
                     "/api/reservations/**"
                 ).hasAuthority("ROLE_CUSTOMER")
 
+                .requestMatchers(
+                    "/api/payments/**"
+                ).hasAuthority("ROLE_CUSTOMER")
+
                 // Administração dos eventos
                 .requestMatchers(
                     "/api/events/organizer/**"

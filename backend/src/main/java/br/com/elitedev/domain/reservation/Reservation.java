@@ -92,6 +92,16 @@ public class Reservation {
         cancelledAt = LocalDateTime.now();
     }
 
+    public void confirmPayment() {
+        if (status == ReservationStatus.CANCELLED) {
+            throw new IllegalStateException("Uma reserva cancelada não pode ser paga.");
+        }
+        if (status == ReservationStatus.CONFIRMED) {
+            throw new IllegalStateException("A reserva já está paga.");
+        }
+        status = ReservationStatus.CONFIRMED;
+    }
+
     public Long getId() { return id; }
     public Event getEvent() { return event; }
     public User getCustomer() { return customer; }
