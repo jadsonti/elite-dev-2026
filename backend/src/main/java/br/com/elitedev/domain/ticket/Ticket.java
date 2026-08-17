@@ -78,6 +78,14 @@ public class Ticket {
         return code + "." + signature;
     }
 
+    public void use() {
+        if (status == TicketStatus.USED) {
+            throw new IllegalStateException("O ingresso já foi utilizado.");
+        }
+        status = TicketStatus.USED;
+        usedAt = LocalDateTime.now();
+    }
+
     public Long getId() {
         return id;
     }
