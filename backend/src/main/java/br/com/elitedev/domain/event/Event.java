@@ -155,6 +155,32 @@ public class Event {
         this.status = EventStatus.CANCELLED;
     }
 
+    public void reserve(Integer quantity) {
+        if (status != EventStatus.PUBLISHED) {
+            throw new IllegalStateException("Somente eventos publicados aceitam reservas.");
+        }
+        if (!eventDateTime.isAfter(LocalDateTime.now())) {
+            throw new IllegalStateException("Não é possível reservar um evento encerrado.");
+        }
+        if (quantity == null || quantity < 1) {
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+        }
+        if (availableQuantity < quantity) {
+            throw new IllegalStateException("Quantidade de ingressos indisponível.");
+        }
+        availableQuantity -= quantity;
+    }
+
+    public void release(Integer quantity) {
+        if (quantity == null || quantity < 1) {
+            throw new IllegalArgumentException("A quantidade deve ser maior que zero.");
+        }
+        if (availableQuantity + quantity > capacity) {
+            throw new IllegalStateException("A devolução ultrapassa a capacidade do evento.");
+        }
+        availableQuantity += quantity;
+    }
+
     public Long getId() {
         return id;
     }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import br.com.elitedev.dto.error.ApiErrorResponse;
 import br.com.elitedev.exception.ExternalCatalogException;
+import br.com.elitedev.exception.ResourceNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 
 @RestControllerAdvice
@@ -29,6 +30,12 @@ public class ApiExceptionHandler {
     ResponseEntity<ApiErrorResponse> handleCatalog(
             ExternalCatalogException exception, HttpServletRequest request) {
         return response(HttpStatus.BAD_GATEWAY, exception.getMessage(), request, Map.of());
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    ResponseEntity<ApiErrorResponse> handleNotFound(
+            ResourceNotFoundException exception, HttpServletRequest request) {
+        return response(HttpStatus.NOT_FOUND, exception.getMessage(), request, Map.of());
     }
 
     @ExceptionHandler(IllegalStateException.class)
