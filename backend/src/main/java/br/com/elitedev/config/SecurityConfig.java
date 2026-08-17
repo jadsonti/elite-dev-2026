@@ -154,6 +154,15 @@ public class SecurityConfig {
                     "/api/payments/**"
                 ).hasAuthority("ROLE_CUSTOMER")
 
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/tickets/shared/*"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/tickets/**"
+                ).hasAuthority("ROLE_CUSTOMER")
+
                 // Administração dos eventos
                 .requestMatchers(
                     "/api/events/organizer/**"
