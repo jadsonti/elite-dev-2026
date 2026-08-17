@@ -2,6 +2,7 @@ package br.com.elitedev.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -59,8 +60,14 @@ public class SecurityConfig {
 
         return (request, response, authException) -> {
 
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(
+                    HttpServletResponse.SC_UNAUTHORIZED
+            );
+
+            response.setContentType(
+                    MediaType.APPLICATION_JSON_VALUE
+            );
+
             response.setCharacterEncoding("UTF-8");
 
             response.getWriter().write("""
@@ -78,8 +85,14 @@ public class SecurityConfig {
 
         return (request, response, accessDeniedException) -> {
 
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setStatus(
+                    HttpServletResponse.SC_FORBIDDEN
+            );
+
+            response.setContentType(
+                    MediaType.APPLICATION_JSON_VALUE
+            );
+
             response.setCharacterEncoding("UTF-8");
 
             response.getWriter().write("""
@@ -106,17 +119,54 @@ public class SecurityConfig {
             )
 
             .exceptionHandling(exception -> exception
-                .authenticationEntryPoint(authenticationEntryPoint())
-                .accessDeniedHandler(accessDeniedHandler())
+                .authenticationEntryPoint(
+                    authenticationEntryPoint()
+                )
+                .accessDeniedHandler(
+                    accessDeniedHandler()
+                )
             )
 
             .authorizeHttpRequests(auth -> auth
 
+                // Públicos
                 .requestMatchers(
                     "/api/auth/login",
                     "/actuator/health"
                 ).permitAll()
 
+                // Consulta pública dos eventos publicados
+                .requestMatchers(
+                    HttpMethod.GET,
+                    "/api/events",
+                    "/api/events/*"
+                ).permitAll()
+
+                .requestMatchers(
+                    "/api/catalog/**"
+                ).hasAuthority("ROLE_ADMIN")
+
+                // Administração dos eventos
+                .requestMatchers(
+                    "/api/events/organizer/**"
+                ).hasAuthority("ROLE_ADMIN")
+
+                .requestMatchers(
+                    HttpMethod.POST,
+                    "/api/events"
+                ).hasAuthority("ROLE_ADMIN")
+
+                .requestMatchers(
+                    HttpMethod.PUT,
+                    "/api/events/**"
+                ).hasAuthority("ROLE_ADMIN")
+
+                .requestMatchers(
+                    HttpMethod.PATCH,
+                    "/api/events/**"
+                ).hasAuthority("ROLE_ADMIN")
+
+                // Infraestrutura atual de autenticação
                 .requestMatchers(
                     "/api/test/admin"
                 ).hasAuthority("ROLE_ADMIN")
